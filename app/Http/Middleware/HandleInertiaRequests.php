@@ -38,13 +38,26 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $user = $request->user();
+        $cartItemsCount = 0;
+        $cartProductIds = [];
+
+        // Add cart items count and product IDs for customer users
+        if ($user && $user->isCustomer()) {
+            $cartItems = $user->cartItems()->get(['product_id', 'quantity']);
+            $cartItemsCount = $cartItems->sum('quantity');
+            $cartProductIds = $cartItems->pluck('product_id')->toArray();
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
+            'cartItemsCount' => $cartItemsCount,
+            'cartProductIds' => $cartProductIds,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
