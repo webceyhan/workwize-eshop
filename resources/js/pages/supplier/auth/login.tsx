@@ -1,4 +1,4 @@
-import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+import SupplierAuthController from '@/actions/App/Http/Controllers/Supplier/AuthController';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -6,23 +6,22 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { register } from '@/routes';
+import { login } from '@/routes';
 import { request } from '@/routes/password';
-import { login as supplierLogin } from '@/routes/supplier';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
-interface LoginProps {
+interface SupplierLoginProps {
     status?: string;
     canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function SupplierLogin({ status, canResetPassword }: SupplierLoginProps) {
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
-            <Head title="Log in" />
+        <AuthLayout title="Supplier Portal" description="Sign in to manage your products and orders">
+            <Head title="Supplier Login" />
 
-            <Form {...AuthenticatedSessionController.store.form()} resetOnSuccess={['password']} className="flex flex-col gap-6">
+            <Form {...SupplierAuthController.store.form()} resetOnSuccess={['password']} className="flex flex-col gap-6">
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
@@ -36,7 +35,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="supplier@example.com"
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -67,23 +66,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 <Label htmlFor="remember">Remember me</Label>
                             </div>
 
-                            <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing} data-test="login-button">
+                            <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing} data-test="supplier-login-button">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Log in
+                                Sign in to Supplier Portal
                             </Button>
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
-                                Sign up
-                            </TextLink>
-                        </div>
-
-                        <div className="text-center text-sm text-muted-foreground">
-                            Are you a supplier?{' '}
-                            <TextLink href={supplierLogin()} tabIndex={6}>
-                                Supplier Login
+                            Not a supplier?{' '}
+                            <TextLink href={login()} tabIndex={5}>
+                                Customer Login
                             </TextLink>
                         </div>
                     </>
