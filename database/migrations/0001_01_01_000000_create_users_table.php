@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,10 +16,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('company_name')->nullable();
+            $table->text('company_description')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->enum('role', UserRole::cases())->default(UserRole::Customer);
             $table->timestamps();
+            $table->timestamp('email_verified_at')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
